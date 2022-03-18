@@ -60,8 +60,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         with:
           tag_name: pre-release
-          release_name: ${{ steps.getshortsha.outputs.versionName }} ${{ steps.getshortsha.outputs.sha }}
+          release_name: ${{ steps.get_build_info.outputs.versionName }} ${{ steps.get_build_info.outputs.sha }}
           body: |
-            ${{ steps.getshortsha.outputs.versionName }} ${{ steps.getshortsha.outputs.sha }}
+            ${{ steps.get_build_info.outputs.versionName }} ${{ steps.get_build_info.outputs.sha }}
           draft: false
           prerelease: true
