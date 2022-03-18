@@ -50,9 +50,9 @@ jobs:
       - name: Get Build Info
         id: get_build_info
         run: |
-          echo "::set-output name=sha::$(git rev-parse --short HEAD)\n"
-          echo "::set-output name=versionCode::$(grep "versionCode" buildData/version.properties|cut -d'=' -f2)\n"
-          echo "::set-output name=versionName::$(grep "versionName" buildData/version.properties|cut -d'=' -f2)\n"
+          echo "::set-output name=sha::$(git rev-parse --short HEAD)"
+          echo "::set-output name=versionCode::$(grep "versionCode" buildData/version.properties|cut -d'=' -f2)"
+          echo "::set-output name=versionName::$(grep "versionName" buildData/version.properties|cut -d'=' -f2)"
 
       - name: Create A New Release
         uses: actions/create-release@v1
