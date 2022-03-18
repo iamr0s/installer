@@ -62,6 +62,6 @@ jobs:
           tag_name: pre-release
           release_name: ${{ steps.getshortsha.outputs.versionName }} ${{ steps.getshortsha.outputs.sha }}
           body: |
-            Pre-Release ${{ steps.getshortsha.outputs }}
+            ${{ steps.getshortsha.outputs.versionName }} ${{ steps.getshortsha.outputs.sha }}
           draft: false
           prerelease: true
