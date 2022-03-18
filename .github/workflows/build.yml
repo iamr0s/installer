@@ -8,10 +8,10 @@
 name: Gradle Build
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
 
 jobs:
   build:
@@ -32,7 +32,9 @@ jobs:
       - name: Clone Keystore Module
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+          test: ${{ toJSON(github) }}
         run: |
+          echo "$(test)"
           git clone "https://${GITHUB_TOKEN}@github.com/iamr0s/InstallerBuildData.git" ./buildData
 
       - name: Previous Build
