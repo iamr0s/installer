@@ -26,32 +26,33 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
-#      - name: Setup Gradle
-#        uses: gradle/gradle-build-action@v2
-#
-#      - name: Clone Keystore Module
-#        env:
-#          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
-#        run: |
-#          git clone "https://${GIT_TOKEN}@github.com/iamr0s/InstallerBuildData.git" ./buildData
-#
-#      - name: Previous Build
-#        run: |
-#          chmod +x ./gradlew
-#
-#      - name: Build Debug Apk(s)
-#        run: |
-#          ./gradlew assembleDebug --stacktrace
-#
-#      - name: Build Release Apk(s)
-#        run: |
-#          ./gradlew assembleRelease --stacktrace
+      #      - name: Setup Gradle
+      #        uses: gradle/gradle-build-action@v2
+      #
+      #      - name: Clone Keystore Module
+      #        env:
+      #          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+      #        run: |
+      #          git clone "https://${GIT_TOKEN}@github.com/iamr0s/InstallerBuildData.git" ./buildData
+      #
+      #      - name: Previous Build
+      #        run: |
+      #          chmod +x ./gradlew
+      #
+      #      - name: Build Debug Apk(s)
+      #        run: |
+      #          ./gradlew assembleDebug --stacktrace
+      #
+      #      - name: Build Release Apk(s)
+      #        run: |
+      #          ./gradlew assembleRelease --stacktrace
 
-      - name: Get Short Sha
-        id: getshortsha
+      - name: Get Build Info
+        id: get_build_info
         run: |
-          sha=$(git rev-parse --short HEAD)
-          echo "${SHA}"
+          echo "::set-output name=sha::$(git rev-parse --short HEAD)\n"
+          echo "::set-output name=versionCode::$(grep "versionCode" buildData/version.properties|cut -d'=' -f2)\n"
+          echo "::set-output name=versionName::$(grep "versionName" buildData/version.properties|cut -d'=' -f2)\n"
 
       - name: Create A New Release
         uses: actions/create-release@v1
@@ -59,8 +60,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         with:
           tag_name: pre-release
-          release_name: Pre-Release ${{ steps.getshortsha.sha }}
+          release_name: ${{ steps.getshortsha.outputs.versionName }} ${{ steps.getshortsha.outputs.sha }}
           body: |
-            Pre-Release ${{ steps.getshortsha.sha }}
+            Pre-Release ${{ steps.getshortsha.outputs }}
           draft: false
           prerelease: true
