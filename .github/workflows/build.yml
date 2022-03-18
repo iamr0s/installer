@@ -34,7 +34,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
           test: ${{ toJSON(github) }}
         run: |
-          echo "$(test)"
+          echo "${test}"
           git clone "https://${GITHUB_TOKEN}@github.com/iamr0s/InstallerBuildData.git" ./buildData
 
       - name: Previous Build
