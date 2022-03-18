@@ -29,11 +29,11 @@ jobs:
       #      - name: Setup Gradle
       #        uses: gradle/gradle-build-action@v2
       #
-      #      - name: Clone Keystore Module
-      #        env:
-      #          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
-      #        run: |
-      #          git clone "https://${GIT_TOKEN}@github.com/iamr0s/InstallerBuildData.git" ./buildData
+      - name: Clone Keystore Module
+        env:
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+        run: |
+          git clone "https://${GIT_TOKEN}@github.com/iamr0s/InstallerBuildData.git" ./buildData
       #
       #      - name: Previous Build
       #        run: |
