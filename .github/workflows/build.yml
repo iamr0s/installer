@@ -51,7 +51,10 @@ jobs:
 
       - name: Get Build Info
         id: get_build_info
+        env:
+          EVENT_TYPE: ${{ github.event_name }}
         run: |
+          echo "::set-output name=prerelease::$(if [[ "${EVENT_TYPE}" != "workflow_dispatch" ]]; then echo true; else echo false; fi)"
           echo "::set-output name=sha::$(git rev-parse --short HEAD)"
           echo "::set-output name=versionCode::$(grep "versionCode" buildData/version.properties|cut -d'=' -f2)"
           echo "::set-output name=versionName::$(grep "versionName" buildData/version.properties|cut -d'=' -f2)"
@@ -62,7 +65,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         with:
-          tag_name: ${{ steps.get_build_info.outputs.versionName }}
+          tag_name: ${{ steps.get_build_info.outputs.versionName }}-${{ steps.get_build_info.outputs.sha }}
           release_name: ${{ steps.get_build_info.outputs.versionName }}-${{ steps.get_build_info.outputs.sha }}
           body: |
             ${{ steps.get_build_info.outputs.versionName }}-${{ steps.get_build_info.outputs.sha }}
