@@ -48,8 +48,9 @@ jobs:
           ./gradlew assembleRelease --stacktrace
 
       - name: Create A New Release
-        env:
-          SHA: ${{ github.sha }}
+#        env:
+#          SHA: ${{ github.sha }}
         run: |
+          SHA=$(git rev-parse --short HEAD)
           echo "${SHA}"
 
