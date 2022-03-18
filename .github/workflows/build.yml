@@ -32,9 +32,7 @@ jobs:
       - name: Clone Keystore Module
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
-          test: ${{ toJSON(github) }}
         run: |
-          echo "${test}"
           git clone "https://${GITHUB_TOKEN}@github.com/iamr0s/InstallerBuildData.git" ./buildData
 
       - name: Previous Build
@@ -65,8 +63,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         with:
-          tag_name: ${{ steps.get_build_info.outputs.versionName }}-${{ steps.get_build_info.outputs.sha }}
-          release_name: ${{ steps.get_build_info.outputs.versionName }}-${{ steps.get_build_info.outputs.sha }}
+          tag_name: ${{ steps.get_build_info.outputs.versionName }}-${{ steps.get_build_info.outputs.sha }}-${{ github.run_id }}
+          release_name: ${{ steps.get_build_info.outputs.versionName }}-${{ steps.get_build_info.outputs.sha }}-${{ github.run_id }}
           body: |
             ${{ steps.get_build_info.outputs.versionName }}-${{ steps.get_build_info.outputs.sha }}
           draft: false
