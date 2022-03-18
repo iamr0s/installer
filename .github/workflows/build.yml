@@ -31,7 +31,7 @@ jobs:
 
       - name: Clone Keystore Module
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         run: |
           git clone "https://${GITHUB_TOKEN}@github.com/iamr0s/InstallerBuildData.git" ./buildData
 
@@ -58,7 +58,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         with:
           tag_name: ${{ steps.get_build_info.outputs.versionName }}
           release_name: ${{ steps.get_build_info.outputs.versionName }}-${{ steps.get_build_info.outputs.sha }}
@@ -70,7 +70,7 @@ jobs:
       - name: Upload Debug To Release Asset
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: app/build/outputs/apk/debug/app-debug.apk
@@ -80,7 +80,7 @@ jobs:
       - name: Upload Release To Release Asset
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: app/build/outputs/apk/release/app-release.apk
