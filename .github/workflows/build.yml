@@ -1,0 +1,55 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Gradle Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Clone Keystore Module
+        env:
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+        run: |
+          git clone "https://${GIT_TOKEN}@github.com/iamr0s/InstallerBuildData.git" ./buildData
+
+      - name: Previous Build
+        run: |
+          chmod +x ./gradlew
+
+      - name: Build Debug Apk(s)
+        run: |
+          ./gradlew assembleDebug --stacktrace
+
+      - name: Build Release Apk(s)
+        run: |
+          ./gradlew assembleRelease --stacktrace
+
+      - name: Create A New Release
+        env:
+          SHA: ${{ github.sha }}
+        run: |
+          echo "${SHA}"
+
