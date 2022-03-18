@@ -26,26 +26,26 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
-      #      - name: Setup Gradle
-      #        uses: gradle/gradle-build-action@v2
-      #
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
       - name: Clone Keystore Module
         env:
-          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git clone "https://${GIT_TOKEN}@github.com/iamr0s/InstallerBuildData.git" ./buildData
-      #
-      #      - name: Previous Build
-      #        run: |
-      #          chmod +x ./gradlew
-      #
-      #      - name: Build Debug Apk(s)
-      #        run: |
-      #          ./gradlew assembleDebug --stacktrace
-      #
-      #      - name: Build Release Apk(s)
-      #        run: |
-      #          ./gradlew assembleRelease --stacktrace
+          git clone "https://${GITHUB_TOKEN}@github.com/iamr0s/InstallerBuildData.git" ./buildData
+
+      - name: Previous Build
+        run: |
+          chmod +x ./gradlew
+
+      - name: Build Debug Apk(s)
+        run: |
+          ./gradlew assembleDebug --stacktrace
+
+      - name: Build Release Apk(s)
+        run: |
+          ./gradlew assembleRelease --stacktrace
 
       - name: Get Build Info
         id: get_build_info
@@ -55,13 +55,34 @@ jobs:
           echo "::set-output name=versionName::$(grep "versionName" buildData/version.properties|cut -d'=' -f2)"
 
       - name: Create A New Release
+        id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: pre-release
-          release_name: ${{ steps.get_build_info.outputs.versionName }} ${{ steps.get_build_info.outputs.sha }}
+          tag_name: ${{ steps.get_build_info.outputs.versionName }}
+          release_name: ${{ steps.get_build_info.outputs.versionName }}-${{ steps.get_build_info.outputs.sha }}
           body: |
-            ${{ steps.get_build_info.outputs.versionName }} ${{ steps.get_build_info.outputs.sha }}
+            ${{ steps.get_build_info.outputs.versionName }}-${{ steps.get_build_info.outputs.sha }}
           draft: false
           prerelease: true
+
+      - name: Upload Debug To Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: app/build/outputs/apk/debug/app-debug.apk
+          asset_name: app-debug.apk
+          asset_content_type: application/zip
+
+      - name: Upload Release To Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: app/build/outputs/apk/release/app-release.apk
+          asset_name: app-release.apk
+          asset_content_type: application/zip
