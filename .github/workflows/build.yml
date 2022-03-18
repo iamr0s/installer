@@ -47,10 +47,20 @@ jobs:
         run: |
           ./gradlew assembleRelease --stacktrace
 
-      - name: Create A New Release
-#        env:
-#          SHA: ${{ github.sha }}
-        run: |
-          SHA=$(git rev-parse --short HEAD)
-          echo "${SHA}"
+      #      - name: Create A New Release
+      #          env:
+      #            SHA: ${{ github.sha }}
+      #          run: |
+      #            SHA=$(git rev-parse --short HEAD)
+      #            echo "${SHA}"
 
+      - name: Create A New Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: ${{ github }}
+          draft: false
+          prerelease: true
